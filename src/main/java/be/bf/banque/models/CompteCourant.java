@@ -13,24 +13,23 @@ import be.bf.banque.models.Titulaire;
  * @invariant numero !=null &&  Format IBAN "BEXX XXXX XXXXX XXXX"
  * @invariant solde >=-ligneDeCredit throws Exception otherwise
  * @invariant ligneDeCredit >= 0
- * @invariant titulaie !=null
+ * @invariant titulaire !=null
  */
 public class CompteCourant {
 
     private String numero;
-    private double solde;
+    private double solde; //read-only
     private double ligneDeCredit;
 
     private Titulaire titulaire;
 
-    public CompteCourant(String numero,double solde,double ligneDeCredit, Titulaire titulaire) {
-        if(numero.length()==19) {
-            this.numero = numero;
-            this.solde = solde;
-            this.ligneDeCredit = ligneDeCredit;
-            this.titulaire = titulaire;
-        }
+    public CompteCourant() {}
 
+    public CompteCourant(String numero,double solde,double ligneDeCredit, Titulaire titulaire) {
+            setNumero(numero);
+            setSolde(solde);
+            setLigneDeCredit(ligneDeCredit);
+            setTitulaire(titulaire);
     }
 
     /**
@@ -40,7 +39,7 @@ public class CompteCourant {
      */
     public void depot(double montant) {
         if(montant <=0) return;
-        this.solde += montant;
+        setSolde(this.solde+montant);
     }
 
     /**
@@ -51,14 +50,13 @@ public class CompteCourant {
     public void retrait(double montant)  {
        if(montant <= 0 ) return; //prog defensive return + rapide que if-else
        if( this.solde - montant < -this.ligneDeCredit) return;
-
-       //if(montant >0 && this.solde - montant > -this.ligneDeCredit)
-
-       solde -=montant;
+        setSolde(this.solde-montant);
     }
 
-    public void setLigneDeCredit(double ligneDeCredit) {
+    public CompteCourant setLigneDeCredit(double ligneDeCredit) {
+        if(ligneDeCredit < 0) return this;
         this.ligneDeCredit = ligneDeCredit;
+        return this;
     }
 
     public double getSolde() {
@@ -72,9 +70,25 @@ public class CompteCourant {
     public double getLigneDeCredit() {
         return ligneDeCredit;
     }
-
     public Titulaire getTitulaire() {
         return titulaire;
+    }
+
+    public CompteCourant setTitulaire(Titulaire titulaire) {
+        this.titulaire = titulaire;
+        return this;
+    }
+
+    public CompteCourant setNumero(String numero) {
+        if(numero.length()!=19) return this;
+        this.numero = numero;
+        return this;
+    }
+
+    private CompteCourant setSolde(double solde) {
+        if(solde < -this.ligneDeCredit)  return this;
+        solde = solde;
+        return this;
     }
 
     @Override

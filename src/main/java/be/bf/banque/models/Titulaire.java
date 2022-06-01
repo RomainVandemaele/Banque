@@ -1,6 +1,7 @@
 package be.bf.banque.models;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 
 /**
@@ -23,10 +24,38 @@ public class Titulaire {
     private LocalDate dateDeNaissance;
     ArrayList<CompteCourant> comptesCourant = new ArrayList<>();
 
+
+    public Titulaire() {}
     public Titulaire(String nom,String prenom,LocalDate dateDeNaissance) {
-        this.nom = nom;
-        this.prenom = prenom;
-        this.dateDeNaissance = dateDeNaissance;
+        this(nom,prenom);
+        this.setDateDeNaissance(dateDeNaissance);
+    }
+
+    public Titulaire(String nom,String prenom,int year,int month,int day) {
+        this(nom,prenom);
+        this.setDateDeNaissance(year,month,day);
+    }
+
+    public Titulaire(String nom,String prenom) {
+        this.setNom(nom);
+        this.setPrenom(prenom);
+    }
+
+    public String getNom() {
+        return this.nom;
+    }
+
+    public String getPrenom() {
+        return this.prenom;
+    }
+
+    public LocalDate getDateDeNaissance() {
+        return this.dateDeNaissance;
+    }
+
+    public int getAge() {
+        Period p = Period.of(dateDeNaissance.getYear(),dateDeNaissance.getMonthValue(),dateDeNaissance.getDayOfMonth());
+        return LocalDate.now().minus(p).getYear();
     }
 
     public void ajoutCompte(CompteCourant compteCourant) {
@@ -35,4 +64,37 @@ public class Titulaire {
         }
     }
 
+
+
+
+    private Titulaire setNom(String nom) {
+        if(nom==null) return this;
+        if(nom.length()==0) return this;
+        this.nom = nom;
+        return this;
+    }
+
+    private Titulaire setPrenom(String prenom) {
+        if(nom==null) return this;
+        if(nom.length()==0) return this;
+        this.prenom = prenom;
+        return this;
+    }
+
+    public Titulaire setDateDeNaissance(LocalDate dateDeNaissance) {
+        this.dateDeNaissance = dateDeNaissance;
+        return this;
+    }
+
+
+    public Titulaire setDateDeNaissance(int year,int month,int day) {
+        this.dateDeNaissance = LocalDate.of(year,month,day);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Nom : "+nom+", Prenom : "+prenom);
+        return sb.toString();
+    }
 }

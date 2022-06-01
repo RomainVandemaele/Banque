@@ -7,19 +7,32 @@ import java.time.LocalDate;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
         Titulaire titulaire = new Titulaire("Vandemaele","Romain", LocalDate.of(1994,10,9));
         CompteCourant compte = new CompteCourant("BE05412498741254",0,20,titulaire);
-        System.out.println(compte);
+//        Titulaire titulaire = new Titulaire();
+//        titulaire.setNom("Vandemaele")
+//                .setPrenom("Romain")
+//                .setDateDeNaissance(LocalDate.of(1994,10,9));
+//
+//        CompteCourant compte = new CompteCourant();
+
         compte.depot(50.5);
-        System.out.println(compte);
-        try {
-            compte.retrait(72.6);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            System.out.println(compte);
-        }
+        System.out.println(compte.getSolde());
+        compte.retrait(20.5);
+        System.out.println(compte.getSolde());
+        compte.setTitulaire(titulaire);
+        System.out.println(compte.getTitulaire().getAge());
+
+        String s = "ok";
     }
+
+//    public static int add(int... termes) { //termes is an array
+//        int total =0;
+//        for(int it : termes) {
+//            total += it;
+//        }
+//        return total;
+//    }
 
 }
