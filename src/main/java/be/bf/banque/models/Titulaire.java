@@ -3,6 +3,7 @@ package be.bf.banque.models;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Class mutable représente un titulaire de compte dans une banque
@@ -25,7 +26,12 @@ public class Titulaire {
     ArrayList<CompteCourant> comptesCourant = new ArrayList<>();
 
 
-    public Titulaire() {}
+    public Titulaire(Titulaire titulaire) {
+        this.setNom(titulaire.nom);
+        this.setPrenom(titulaire.prenom);
+        this.setDateDeNaissance(this.getDateDeNaissance());
+    }
+
     public Titulaire(String nom,String prenom,LocalDate dateDeNaissance) {
         this(nom,prenom);
         this.setDateDeNaissance(dateDeNaissance);
@@ -92,9 +98,38 @@ public class Titulaire {
         return this;
     }
 
+//    @Override
+//    public String toString() {
+//        StringBuilder sb = new StringBuilder("Titulaire{Nom:  "+nom+", Prenom : "+prenom+"}");
+//        return sb.toString();
+//    }
+
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Nom : "+nom+", Prenom : "+prenom);
+        final StringBuilder sb = new StringBuilder("Titulaire{");
+        sb.append("nom='").append(nom).append('\'');
+        sb.append(", prenom='").append(prenom).append('\'');
+        sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if( !(obj instanceof Titulaire)) return false;
+        Titulaire t = (Titulaire) obj;
+        return this.equals(t);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nom, prenom);
+    }
+
+    private boolean equals(Titulaire t) {
+        if(!this.nom.equals(t.nom)) return false;
+        if(!this.prenom.equals(t.prenom)) return false;
+        return true;
     }
 }
