@@ -8,14 +8,15 @@ import be.bf.banque.models.Titulaire;
  * @attribute ligneDeCredit double
  *
  * @invariant ligneDeCredit >= 0
+ * @invariant solde > - ligneDeCredit
+ * @see be.bf.banque.models.Compte
  */
 public class CompteCourant extends  Compte{
 
-    private String numero;
-    private double solde;
+
     private double ligneDeCredit;
 
-    private Titulaire titulaire;
+
 
     public CompteCourant(String numero, Titulaire titulaire,double solde,double ligneDeCredit) {
         super(numero,titulaire,solde);
@@ -30,22 +31,17 @@ public class CompteCourant extends  Compte{
 
     public CompteCourant(String numero, Titulaire titulaire) {
         super(numero,titulaire);
+        this.setLigneDeCredit(0);
     }
 
     public CompteCourant(CompteCourant compte) {
-        super(compte.numero,compte.titulaire, compte.solde);
+        super(compte.getNumero(),compte.getTitulaire(), compte.getSolde());
         this.setLigneDeCredit(compte.ligneDeCredit);
     }
 
     public CompteCourant(Compte compte) {
         super(compte.getNumero(),compte.getTitulaire(), compte.getSolde());
-    }
-
-
-    @Override
-    public void retrait(double montant) {
-        if(this.getSolde()-montant < -ligneDeCredit) return;
-        super.retrait(montant);
+        this.setLigneDeCredit(0);
     }
 
 
@@ -59,6 +55,23 @@ public class CompteCourant extends  Compte{
         return ligneDeCredit;
     }
 
+    /**
+     * @see Compte#retrait(double)
+     * @param montant > 0
+     * @modify solde si solde-montant > -ligneDeCredit
+     */
+    @Override
+    public void retrait(double montant) {
+        if(this.getSolde()-montant < -this.ligneDeCredit) return;
+        super.retrait(montant);
+    }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("CompteCourant{");
+        sb.append(super.toString());
+        sb.append("ligneDeCredit=").append(ligneDeCredit);
+        sb.append('}');
+        return sb.toString();
+    }
 }

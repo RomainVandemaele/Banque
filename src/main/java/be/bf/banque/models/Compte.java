@@ -3,11 +3,11 @@ package be.bf.banque.models;
 import java.util.Objects;
 
 /**
- * Repésente un compte bancaire
+ * Représente un compte bancaire
  * FA: CompteCourant{numero,solde,ligneDeCredit}
- * @attribute numero String
- * @attribute solde double
- * @attribute titulaire Titulaire
+ * @attribute numero {@link String String}
+ * @attribute solde {@link double double}
+ * @attribute titulaire {@link Titulaire Titulaire}
  *
  * @invariant numero !=null &&  Format IBAN "BEXX XXXX XXXXX XXXX"
  * @invariant titulaire !=null
@@ -20,11 +20,12 @@ public class Compte {
     public Compte(String numero,Titulaire titulaire) {
         this.setNumero(numero);
         this.setTitulaire(titulaire);
+        this.solde = 0;
     }
 
     public Compte(String numero,Titulaire titulaire,double solde) {
         this(numero,titulaire);
-        this.setSolde(solde);
+        this.solde = solde;
     }
 
     public  Compte(Compte compte) {
@@ -32,23 +33,25 @@ public class Compte {
     }
 
     /**
-     * Méthode prmettant de soustraire un montant au solde
+     * Procédure prmettant de soustraire un montant au solde
      * @param montant > 0
      * @modify this.solde  | this.solde = this.solde - montant ssi solde-montant >= - ligneDeCredit
      */
     public void retrait(double montant) {
         if(montant <= 0 ) return; //prog defensive return + rapide que if-else
-        setSolde(this.solde-montant);
+        this.solde -= montant;
+        //setSolde(this.solde-montant);
     }
 
     /**
-     * Méthode permettant d'ajouter un montant au solde
+     * Procédure permettant d'ajouter un montant au solde
      * @param montant > 0
      * @modify this.solde  & this.solde = this.solde + montant
      */
     public void depot(double montant) {
         if(montant <=0) return;
-        setSolde(this.solde+montant);
+        this.solde +=montant;
+        //setSolde(this.solde+montant);
     }
 
     public String getNumero() {
@@ -81,15 +84,20 @@ public class Compte {
         String countryCode = numero.substring(0,2);
         sb.append( String.valueOf ( (int) countryCode.charAt(0)  -55 ) );
         sb.append( String.valueOf ( (int) countryCode.charAt(1)  -55 ) );
-        System.out.println(sb);
         copy = copy.substring(4,copy.length()) + sb.toString() + copy.substring(2,4);
         long mod = Long.valueOf(copy)%97;
         return mod==1;
     }
 
     public double getSolde() {
-        return solde;
+        return this.solde;
     }
+
+//    private Compte setSolde(double montant) {
+//        this.solde = montant;
+//        return this;
+//    }
+
 
     final public Titulaire getTitulaire() {
         return new Titulaire(titulaire);
@@ -114,14 +122,11 @@ public class Compte {
         return Objects.hash(numero);
     }
 
-    private Compte setSolde(double montant) {
-        this.solde = montant;
-        return this;
-    }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Compte{");
+        sb.append("titulaire='").append(titulaire).append('\'');
         sb.append("numero='").append(numero).append('\'');
         sb.append(", solde=").append(solde);
         sb.append('}');

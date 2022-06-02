@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
  * FA Banque(nom,nombre de Comptes)
  *
  * @attribute nom nom de la banque
- * @attribute comptes Map key = String && vzlue = CompteCourant
+ * @attribute comptes Map key = String && value = CompteCourant
  *
  * @invariant nom !=null &&  >0
  * @comptes comptes!=null
  */
 public class Banque {
     private String nom;
-    private Map<String,CompteCourant> comptes = new HashMap<String,CompteCourant>();
+    private Map<String,Compte> comptes = new HashMap<String,Compte>();
 
     public Banque(String nom) {
         this.setNom(nom);
@@ -32,7 +32,7 @@ public class Banque {
         return this.nom;
     }
 
-    public Optional<CompteCourant> get(String numero) {
+    public Optional<Compte> get(String numero) {
         if (!this.containsAccount(numero)) return Optional.empty();
         return  Optional.of( this.comptes.get(numero));
     }
@@ -43,7 +43,7 @@ public class Banque {
      * @return this
      * @modify comptes tq comptes/.length = comptes.length+1
      */
-    public Banque add(CompteCourant compte) {
+    public Banque add(Compte compte) {
         if(compte==null) return this;
         if(this.containsAccount(compte.getNumero())) return  this;
         this.comptes.put(compte.getNumero(),compte);
@@ -67,9 +67,9 @@ public class Banque {
     }
 
 
-    public Map.Entry<String, CompteCourant>[] getComptes() {
-        Map<String, CompteCourant> copy = new HashMap<String, CompteCourant>();
-        for(Map.Entry<String, CompteCourant> entry: this.comptes.entrySet()) {
+    public Map.Entry<String, Compte>[] getComptes() {
+        Map<String, Compte> copy = new HashMap<String, Compte>();
+        for(Map.Entry<String, Compte> entry: this.comptes.entrySet()) {
             copy.put(entry.getKey(), new CompteCourant(entry.getValue()));
         }
         return copy.entrySet().toArray(new Map.Entry[0]);
