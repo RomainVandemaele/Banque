@@ -106,14 +106,15 @@ public class Banque {
 
     public void addInterest(Titulaire titulaire) {
         getTitulaire(titulaire).stream().forEach( c -> c.addInteret() );
-//        ArrayList<Compte> comptes = getTitulaire(titulaire);
-//        for (Compte c : comptes) {
-//            c.depot( c.calculInterets() );
-//        }
     }
 
     public void addInterest() {
         this.comptes.values().forEach( c -> c.addInteret() );
+    }
+
+    public ArrayList<Titulaire> getClients() {
+        ArrayList<Titulaire> titulaires = (ArrayList<Titulaire>) comptes.values().stream().map(c ->   c.getTitulaire() ).distinct().toList();
+        return titulaires;
     }
 
 
