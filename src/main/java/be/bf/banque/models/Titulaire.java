@@ -70,9 +70,6 @@ public class Titulaire {
         }
     }
 
-
-
-
     private Titulaire setNom(String nom) {
         if(nom==null) return this;
         if(nom.length()==0) return this;

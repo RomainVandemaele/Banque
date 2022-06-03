@@ -1,8 +1,6 @@
 package be.bf.banque.models;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Représente une Banque qui a des comptes
@@ -73,6 +71,49 @@ public class Banque {
             copy.put(entry.getKey(), new CompteCourant(entry.getValue()));
         }
         return copy.entrySet().toArray(new Map.Entry[0]);
+    }
+
+    /**
+     * Fonction permettant d'avoir Somme des solde des comptes du titutaire avec solde >0
+     * @param titulaire titulaire du compte
+     * @return Somme des solde des comptes du titutaire avec solde >0;
+     */
+    public double assetCalculator(Titulaire titulaire) {
+        double total =0;
+        ArrayList<Compte> comptes  = this.getTitulaire(titulaire);
+        for (Compte c : comptes) {
+            if(c.getSolde() > 0) {
+                total = c.add(total);
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Foncion permettant d'obtenir les comptes d'un titulaire
+     * @param titulaire titulaire des comptes
+     * @return ArrayList les comptes d'un titulaire
+     */
+    public ArrayList<Compte> getTitulaire(Titulaire titulaire) {
+        ArrayList<Compte> comptes = new ArrayList<>();
+        for (Compte c : this.comptes.values()) {
+            Titulaire compteTitulaire = c.getTitulaire();
+            if (!c.getTitulaire().equals(titulaire)) continue;
+            comptes.add(c);
+        }
+        return comptes;
+    }
+
+    public void addInterest(Titulaire titulaire) {
+        getTitulaire(titulaire).stream().forEach( c -> c.addInteret() );
+//        ArrayList<Compte> comptes = getTitulaire(titulaire);
+//        for (Compte c : comptes) {
+//            c.depot( c.calculInterets() );
+//        }
+    }
+
+    public void addInterest() {
+        this.comptes.values().forEach( c -> c.addInteret() );
     }
 
 

@@ -14,6 +14,8 @@ import be.bf.banque.models.Titulaire;
 public class CompteCourant extends  Compte{
 
 
+    private static double INTEREST_POS = 0.01;
+    private static double INTEREST_NEG = 0.075;
     private double ligneDeCredit;
 
 
@@ -74,4 +76,12 @@ public class CompteCourant extends  Compte{
         sb.append('}');
         return sb.toString();
     }
+
+    @Override
+    protected double calculInteret() {
+        //return getSolde() * ( getSolde()>=0 ? INTEREST_POS : INTEREST_NEG);
+        if(this.getSolde()>=0) return INTEREST_POS * this.getSolde();
+        return INTEREST_NEG * this.getSolde();
+    }
+
 }

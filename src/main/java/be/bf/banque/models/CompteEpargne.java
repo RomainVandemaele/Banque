@@ -13,6 +13,8 @@ import java.time.LocalDate;
  */
 public class CompteEpargne extends Compte {
 
+    private static double INTEREST = 0.1;
+
     private LocalDate dateDernierRetrait;
 
     public  CompteEpargne(String numero,Titulaire titulaire)  {
@@ -55,6 +57,11 @@ public class CompteEpargne extends Compte {
         sb.append("dateDernierRetrait=").append(dateDernierRetrait);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    protected double calculInteret() {
+        return getSolde()*INTEREST;
     }
 }
 

@@ -12,7 +12,7 @@ import java.util.Objects;
  * @invariant numero !=null &&  Format IBAN "BEXX XXXX XXXXX XXXX"
  * @invariant titulaire !=null
  */
-public class Compte {
+public abstract class Compte {
     private String numero;
     private Titulaire titulaire;
     private double solde;
@@ -66,7 +66,7 @@ public class Compte {
      */
     private Compte setNumero(String numero) {
         if(numero.length()!=19) return this;
-        if(!this.checkIBAN(numero)) return this;
+        //if(!this.checkIBAN(numero)) return this;
         this.numero = numero;
         return this;
     }
@@ -109,6 +109,15 @@ public class Compte {
         return this;
     }
 
+    public double add(Compte compte) {
+        return this.solde + compte.solde;
+    }
+
+    public double add(double amount) {
+        return this.solde + amount;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,4 +141,12 @@ public class Compte {
         sb.append('}');
         return sb.toString();
     }
+
+    protected abstract double calculInteret();
+
+    public void addInteret() {
+        this.solde += this.calculInteret();
+    }
+
+
 }
