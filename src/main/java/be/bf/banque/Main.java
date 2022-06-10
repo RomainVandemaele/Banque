@@ -1,20 +1,36 @@
 package be.bf.banque;
 
 import be.bf.banque.models.*;
+import be.bf.banque.repository.CompteRepository;
+import be.bf.banque.repository.TitulaireRepository;
 
 import javax.swing.text.DateFormatter;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+
 
 
 public class Main {
 
     static Scanner myScanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        //Main.class.getName().
+        Class.forName("org.sqlite.JDBC");
+        //String DB_PATH = Main.class.getClassLoader().getResource("bank.sqlite3").toString();
+
+        //System.out.printf("%s\n",DB_PATH);
+        final String PATH  = "C:\\Users\\Romai\\IdeaProjects\\Banque\\src\\main\\resources\\bank.sqlite3";
+        Titulaire titulaire =  new TitulaireRepository(PATH).findById(1);
+
+        System.out.println(titulaire);
+        ArrayList<Compte> comptes = new CompteRepository(PATH).findAll();
+        comptes.stream().forEach(System.out::println);
 
     }
 

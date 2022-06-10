@@ -14,6 +14,8 @@ public class TitulaireRepository {
         this.DB_PATH = dbPath;
     }
 
+
+
     private Connection connect() {
         Connection connection = null;
         try {
@@ -24,18 +26,13 @@ public class TitulaireRepository {
         return connection;
     }
 
-    public ArrayList<Titulaire> finAll() {
+    public ArrayList<Titulaire> findAll() {
         ArrayList<Titulaire> titulaires = new ArrayList<>();
         Connection connection = this.connect();
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Titulaire");
-            ResultSet resultSet = statement.getResultSet();
-            if(!resultSet.next()) {
-                return null;
-            }else {
-                resultSet.previous();
-                while (resultSet.next()) { titulaires.add(fromResultSet(resultSet)); }
-            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Titulaire");
+            while (resultSet.next()) { titulaires.add(fromResultSet(resultSet)); }
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -47,7 +44,8 @@ public class TitulaireRepository {
         try {
             String nom = resultSet.getString("nom");
             String prenom = resultSet.getString("prenom");
-            return  new Titulaire(nom,prenom,);
+            System.out.println(nom+ " " + prenom);
+            return  new Titulaire(nom,prenom);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -58,7 +56,7 @@ public class TitulaireRepository {
 
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM Titulaire WHERE id = ?");
         statement.setInt(1,id);
-        ResultSet rs = statement.getResultSet();
+        ResultSet rs = statement.executeQuery();
 
         if(!rs.next()) {
             connection.close();
