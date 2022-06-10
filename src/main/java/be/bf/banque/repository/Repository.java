@@ -1,7 +1,5 @@
 package be.bf.banque.repository;
 
-import be.bf.banque.models.Compte;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -26,12 +24,12 @@ public abstract class Repository<T> {
 
     public abstract T fromResultSet(ResultSet resultSet);
 
-    public ArrayList<T> findAll(int id) {
+    public ArrayList<T> findAll() {
         ArrayList<T> list = new ArrayList<>();
         Connection connection = this.connect();
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ?");
-            statement.setString(1,this.TABLE_NAME);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM "+ this.TABLE_NAME);
+            //statement.setString(1,this.TABLE_NAME);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) { list.add(this.fromResultSet(resultSet)); }
             connection.close();
@@ -41,12 +39,12 @@ public abstract class Repository<T> {
         return list;
     }
 
-    public T findFromId(int id) {
+    public T findById(int id) {
         try {
             Connection connection = this.connect();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ? WHERE id = ?");
-            statement.setString(1,this.TABLE_NAME);
-            statement.setInt(2,id);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + this.TABLE_NAME + " WHERE id = ?");
+
+            statement.setInt(1,id);
             ResultSet rs = statement.executeQuery();
             if(!rs.next()) {
                 connection.close();

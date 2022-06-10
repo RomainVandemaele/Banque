@@ -24,11 +24,11 @@ public class CompteRepository extends Repository<Compte> {
             int solde = resultSet.getInt("solde");
             Titulaire titulaire = new TitulaireRepository(this.getDB_PATH()).findById(resultSet.getInt("titulaire_id"));
             String type = resultSet.getString("desc");
+
             if (type.equals("COURANT")) {
                 int ligneDeCredit = resultSet.getInt("ligneCredit");
                 compte = new CompteCourant(numero, titulaire, ligneDeCredit, solde);
-            }
-            if (type.equals("EPARGNE")) {
+            }else if (type.equals("EPARGNE")) {
                 LocalDate dateRetrait = resultSet.getDate("dateDernierRetrait").toLocalDate();
                 compte = new CompteEpargne(numero, titulaire, solde);
             } else {

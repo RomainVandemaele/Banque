@@ -4,13 +4,10 @@ import be.bf.banque.models.*;
 import be.bf.banque.repository.CompteRepository;
 import be.bf.banque.repository.TitulaireRepository;
 
-import javax.swing.text.DateFormatter;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 
 
@@ -26,9 +23,8 @@ public class Main {
 
         //System.out.printf("%s\n",DB_PATH);
         final String PATH  = "C:\\Users\\Romai\\IdeaProjects\\Banque\\src\\main\\resources\\bank.sqlite3";
-        Titulaire titulaire =  new TitulaireRepository(PATH).findById(1);
-
-        System.out.println(titulaire);
+        ArrayList<Titulaire> titulaires =  new TitulaireRepository(PATH).findAll();
+        titulaires.stream().forEach(System.out::println);
         ArrayList<Compte> comptes = new CompteRepository(PATH).findAll();
         comptes.stream().forEach(System.out::println);
 
