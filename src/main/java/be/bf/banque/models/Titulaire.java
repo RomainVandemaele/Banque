@@ -26,12 +26,19 @@ public class Titulaire {
     ArrayList<CompteCourant> comptesCourant = new ArrayList<>();
 
 
+
     public Titulaire(Titulaire titulaire) {
         this.setNom(titulaire.nom);
         this.setPrenom(titulaire.prenom);
         this.setDateDeNaissance(this.getDateDeNaissance());
     }
 
+    /**
+     * Constructeur
+     * @param nom Nom
+     * @param prenom Prenom
+     * @param dateDeNaissance
+     */
     public Titulaire(String nom,String prenom,LocalDate dateDeNaissance) {
         this(nom,prenom);
         this.setDateDeNaissance(dateDeNaissance);
@@ -42,6 +49,11 @@ public class Titulaire {
         this.setDateDeNaissance(year,month,day);
     }
 
+    /**
+     *
+     * @param nom nom
+     * @param prenom prenom
+     */
     public Titulaire(String nom,String prenom) {
         this.setNom(nom);
         this.setPrenom(prenom);

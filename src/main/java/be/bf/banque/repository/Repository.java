@@ -28,7 +28,6 @@ public abstract class Repository<T> {
         ResultSetMetaData md = rs.getMetaData();
         final int colCount = md.getColumnCount();
         HashMap row = new HashMap(colCount);
-        System.out.println(colCount);
         for (int i =1; i<=colCount;++i) { row.put(md.getColumnName(i),rs.getObject(i)); }
         return row;
     }

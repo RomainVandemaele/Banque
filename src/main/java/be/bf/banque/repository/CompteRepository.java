@@ -27,7 +27,6 @@ public class CompteRepository extends Repository<Compte> {
             if (attributes.get("desc").equals("COURANT")) {
                 Constructor<CompteCourant> constructor = CompteCourant.class.getConstructor(String.class,Titulaire.class,Double.class,Double.class);
                 return constructor.newInstance(attributes.get("numero"),titulaire,attributes.get("ligneCredit"),attributes.get("solde"));
-
             }else if (attributes.get("desc").equals("EPARGNE")) {
                 Constructor<CompteEpargne> constructor = CompteEpargne.class.getConstructor(String.class,Titulaire.class,Double.class);
                 return constructor.newInstance(attributes.get("numero"),titulaire,attributes.get("solde"));
