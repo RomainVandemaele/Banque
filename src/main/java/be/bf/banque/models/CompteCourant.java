@@ -20,12 +20,12 @@ public class CompteCourant extends  Compte{
 
 
 
-    public CompteCourant(String numero, Titulaire titulaire,double solde,double ligneDeCredit) {
+    public CompteCourant(String numero, Titulaire titulaire,Double solde,Double ligneDeCredit) {
         super(numero,titulaire,solde);
         this.setLigneDeCredit(ligneDeCredit);
     }
 
-    public CompteCourant(String numero, Titulaire titulaire,double ligneDeCredit) {
+    public CompteCourant(String numero, Titulaire titulaire,Double ligneDeCredit) {
         this(numero,titulaire);
         this.setLigneDeCredit(ligneDeCredit);
     }

@@ -19,14 +19,16 @@ public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         //Main.class.getName().
         Class.forName("org.sqlite.JDBC");
-        //String DB_PATH = Main.class.getClassLoader().getResource("bank.sqlite3").toString();
+        String DB_PATH = Main.class.getClassLoader().getResource("bank.sqlite3").toString();
 
-        //System.out.printf("%s\n",DB_PATH);
-        final String PATH  = "C:\\Users\\Romai\\IdeaProjects\\Banque\\src\\main\\resources\\bank.sqlite3";
+        System.out.printf("%s\n",DB_PATH);
+
+        final String PATH  = "/home/rvdemael/IdeaProjects/Banque/src/main/resources/bank.sqlite3";
         ArrayList<Titulaire> titulaires =  new TitulaireRepository(PATH).findAll();
         titulaires.stream().forEach(System.out::println);
         ArrayList<Compte> comptes = new CompteRepository(PATH).findAll();
         comptes.stream().forEach(System.out::println);
+
 
     }
 

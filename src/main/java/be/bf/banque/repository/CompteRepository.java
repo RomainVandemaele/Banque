@@ -5,9 +5,12 @@ import be.bf.banque.models.CompteCourant;
 import be.bf.banque.models.CompteEpargne;
 import be.bf.banque.models.Titulaire;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CompteRepository extends Repository<Compte> {
 
@@ -19,24 +22,28 @@ public class CompteRepository extends Repository<Compte> {
     @Override
     public Compte fromResultSet(ResultSet resultSet) {
         try {
-            Compte compte = null;
-            String numero = resultSet.getString("numero");
-            int solde = resultSet.getInt("solde");
-            Titulaire titulaire = new TitulaireRepository(this.getDB_PATH()).findById(resultSet.getInt("titulaire_id"));
-            String type = resultSet.getString("desc");
+            HashMap attributes = this.toHashMap(resultSet);
+            Titulaire titulaire = new TitulaireRepository(this.getDB_PATH()).findById((int) attributes.get("titulaire_id"));
+            if (attributes.get("desc").equals("COURANT")) {
+                Constructor<CompteCourant> constructor = CompteCourant.class.getConstructor(String.class,Titulaire.class,Double.class,Double.class);
+                return constructor.newInstance(attributes.get("numero"),titulaire,attributes.get("ligneCredit"),attributes.get("solde"));
 
-            if (type.equals("COURANT")) {
-                int ligneDeCredit = resultSet.getInt("ligneCredit");
-                compte = new CompteCourant(numero, titulaire, ligneDeCredit, solde);
-            }else if (type.equals("EPARGNE")) {
-                LocalDate dateRetrait = resultSet.getDate("dateDernierRetrait").toLocalDate();
-                compte = new CompteEpargne(numero, titulaire, solde);
+            }else if (attributes.get("desc").equals("EPARGNE")) {
+                Constructor<CompteEpargne> constructor = CompteEpargne.class.getConstructor(String.class,Titulaire.class,Double.class);
+                return constructor.newInstance(attributes.get("numero"),titulaire,attributes.get("solde"));
             } else {
                 throw new RuntimeException("The desc column for id " + resultSet.getInt("numero") + " is set incorrectly");
             }
-            return compte;
         }catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
 
     }

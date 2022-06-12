@@ -21,7 +21,7 @@ public class CompteEpargne extends Compte {
         super(numero,titulaire);
     }
 
-    public  CompteEpargne(String numero,Titulaire titulaire,double solde)  {
+    public  CompteEpargne(String numero,Titulaire titulaire,Double solde)  {
         super(numero,titulaire,solde);
     }
 
