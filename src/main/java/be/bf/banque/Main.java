@@ -4,7 +4,12 @@ import be.bf.banque.models.*;
 import be.bf.banque.repository.CompteRepository;
 import be.bf.banque.repository.TitulaireRepository;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Parameter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class Main {
@@ -26,10 +32,14 @@ public class Main {
 
         //System.out.printf("%s\n",DB_PATH);
 
-        final String PATH  = "/home/rvdemael/IdeaProjects/Banque/src/main/resources/bank.sqlite3";
+        final String PATH  = "/home/rvdemael/IdeaProjects/Banque/uml/Class diagram (unregistered).svg";
+        Path path = Paths.get(PATH);
+        String newFile = Files.lines(path).collect(Collectors.joining()).replace("UNREGISTERED","");
+        FileWriter myWriter = new FileWriter(PATH);
+        myWriter.write(newFile);
+        myWriter.close();
 
-
-        hasshMapToParamArray();
+        //Stream<String> streamOfStrings = Files.lines(path);
 
 //        ArrayList<Titulaire> titulaires =  new TitulaireRepository(DB_PATH).findAll();
 //        titulaires.stream().forEach(System.out::println);
