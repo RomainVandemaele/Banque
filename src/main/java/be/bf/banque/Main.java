@@ -24,10 +24,10 @@ public class Main {
         EntityManager em = emf.createEntityManager();
 
         List<Titulaire> titulaires = em.createQuery("SELECT t from Titulaire t", Titulaire.class).getResultList();
-
+        titulaires.forEach(System.out::println);
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        em.persist(new Titulaire("Flavian","Ovyn"));
+        em.persist(new Titulaire("Vandemaele","Romain"));
         transaction.commit();
         em.close();
         //Main.class.getName().

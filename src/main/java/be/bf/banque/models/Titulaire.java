@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 @Entity
-@ToString
+@ToString(includeFieldNames = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Titulaire {
@@ -20,6 +20,8 @@ public class Titulaire {
     private String lastname;
     @Getter @Setter
     private String firstname;
+
+    public Titulaire() {}
 
     public Titulaire(String lastname, String firstname) {
         this.lastname = lastname;
