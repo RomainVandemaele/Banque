@@ -1,11 +1,27 @@
 package be.bf.banque.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.google.common.base.Objects;
+import jakarta.persistence.*;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+import java.security.SecureRandom;
+import java.time.LocalDate;
+
+/**
+ * Mutable Class that represents the owner of account(s) in a bank
+ * FA AccountOwner{firstname,lastname}
+ *
+ * @attribute id Long
+ * @attribute ssin String
+ * @attribute firstname Strting
+ * @attribute lastname String
+ * @attrivute birthday LocalDate
+ *
+ * @invariant ssin not null and ssin.length = 12 FORMAT YYMMDD-XXXXX
+ * @invariant firstname not null and firstname.length > 0
+ * @invariant lastname not null and lastname.length > 0
+ */
 @Entity
 @ToString(includeFieldNames = true)
 //@NoArgsConstructor
@@ -17,18 +33,68 @@ public class AccountOwner {
     private Long id;
 
     @Getter @Setter
-    private String ssin;
+    @NotNull
+    @Column(name = "ssin", nullable = false,unique = true, length = SSIN_LENGTH)
+    private final String SSIN;
 
-    @Getter @Setter
-    private String lastname;
-    @Getter @Setter
-    private String firstname;
+    //columnDefinition = "varchar(32) default 'John' "
+    @Column(nullable = false, length = 32)
+    private String lastname = "Snow";
+    @Column(nullable = false, length = 32 )
+    private String firstname = "John";
 
-    public AccountOwner() {}
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birthday", nullable = true)
+    private LocalDate birthday;
 
-    public AccountOwner(String lastname, String firstname) {
-        this.lastname = lastname;
-        this.firstname = firstname;
+    @Transient
+    static final int SSIN_LENGTH = 12;
+
+    public AccountOwner() {
+        SecureRandom sr = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i=0 ;i < SSIN_LENGTH - 1 ;++i) {
+            sb.append(sr.nextInt(1,10));
+        }
+;       sb.insert(6,'-');
+        this.SSIN = sb.toString();
+    }
+
+    public AccountOwner(AccountOwner accountOwner) {
+        this(accountOwner.SSIN,accountOwner.firstname,accountOwner.lastname,accountOwner.birthday);
+        this.id = accountOwner.id;
+    }
+
+    public AccountOwner(String ssin,String lastname, String firstname) {
+        this.SSIN = ssin;
+        setLastname(lastname);
+        setFirstname(firstname);
+    }
+
+    public AccountOwner(String ssin, String lastname, String firstname, LocalDate birthday) {
+        this(ssin,firstname,lastname);
+        this.birthday = birthday;
+    }
+
+
+    public String getSsin() {
+        return SSIN;
+    }
+
+
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public AccountOwner setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+        return this;
+    }
+
+    public AccountOwner setBirthday(int year, int month, int day) {
+        this.birthday = LocalDate.of(year,month,day);
+        return this;
     }
 
 
@@ -45,7 +111,8 @@ public class AccountOwner {
     }
 
     public AccountOwner setLastname(String lastname) {
-        if(lastname.isEmpty()) return null;
+        if(lastname == null) return this;
+        if(lastname.isBlank()) return this;
         this.lastname = lastname;
         return this;
     }
@@ -55,18 +122,34 @@ public class AccountOwner {
     }
 
     public AccountOwner setFirstname(String firstname) {
-        if(firstname.isEmpty()) return null;
+        if(firstname == null) return null;
+        if(firstname.isBlank()) return null;
         this.firstname = firstname;
         return this;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountOwner that = (AccountOwner) o;
+        return Objects.equal(SSIN, that.SSIN) && Objects.equal(lastname, that.lastname) && Objects.equal(firstname, that.firstname) && Objects.equal(birthday, that.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(SSIN, lastname, firstname, birthday);
+    }
+
+    @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Titulaire{");
-        sb.append("id=").append(id);
+        final StringBuilder sb = new StringBuilder("AccountOwner{");
+        sb.append("SSIN='").append(SSIN).append('\'');
         sb.append(", lastname='").append(lastname).append('\'');
         sb.append(", firstname='").append(firstname).append('\'');
         sb.append('}');
         return sb.toString();
     }
+
+
 }

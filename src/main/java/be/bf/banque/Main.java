@@ -1,13 +1,21 @@
 package be.bf.banque;
 
 import be.bf.banque.models.AccountOwner;
+import be.bf.banque.models.Bank;
 import be.bf.banque.ui.BanqueInterface;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.metamodel.Metamodel;
+import org.hibernate.*;
+import org.hibernate.Cache;
+import org.hibernate.boot.SessionFactoryBuilder;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.engine.spi.FilterDefinition;
+import org.hibernate.stat.Statistics;
 
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,30 +29,56 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-demo");
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = emf.createEntityManager(); //standard JPA persistent context
+        Session session = em.unwrap(Session.class); //Session is the entituManager for Hibernate
 
+        //Add all the list  as managed entities in session so update are automatically send to DB
         List<AccountOwner> titulaires = em.createQuery("SELECT o from AccountOwner o", AccountOwner.class).getResultList();
-        titulaires.forEach(System.out::println);
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(new AccountOwner("Ovyn","Flavian"));
-        transaction.commit();
+        //AccountOwner accountOwner =  titulaires.stream().filter( p -> p.getId()==4).findFirst().get();
+        //accountOwner.setBirthday(1992,4,1);
+
+        AccountOwner owner = new AccountOwner("900508-45216","Ricardo","Rutabare");
+        owner.setBirthday(1997,2,19);
+        owner.setId(2L);
+        //em.persist(owner);
+        session.merge(owner); //for detached ( existing but not managed)
+
+        EntityTransaction entityTransaction = em.getTransaction();
+        entityTransaction.begin();
+
+        AccountOwner owner2 = new AccountOwner();
+        em.persist(owner2);
+
+        entityTransaction.commit();
+
+        //session.persist(owner);//if element does not already exists (transient)
+
+        //em.merge(owner); //for detached ( existing but not managed) AUTO UPDATE
+        //em.persist(owner);//if element does not already exists (transient) INSERT
+        //em.detach(owner); //remove from managed entity NOT AUTO UPDATE
+        //em.remove(owner); //delete entity from dDB DELETE
+
+//        Transaction transaction = session.getTransaction();
+//        transaction.begin();
+//        transaction.commit();
+//
+
+
         em.close();
+
+
+        Bank b = new Bank();
+
+        b.setName("PISCOU SARL");
+        System.out.println(b.getName());
+
 
         //Main.class.getName().
 //        Class.forName("org.sqlite.JDBC");
 //        String DB_PATH = Main.class.getClassLoader().getResource("bank.sqlite3").toString();
 //        //final String PATH  = "/home/rvdemael/IdeaProjects/Banque/src/main/resources/bank.sqlite3";
-//
-//
-//        TitulaireRepository tr = new TitulaireRepository();
-//        ArrayList<Titulaire> titulaires = tr.findAll();
-//        //titulaires.forEach(System.out::println);
-//
-//        CompteRepository cr = new CompteRepository();
-//        ArrayList<Compte> comptes = cr.findAll();
-//        //comptes.forEach(System.out::println);
+
     }
 
 //
