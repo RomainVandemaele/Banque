@@ -1,6 +1,6 @@
 package be.bf.banque;
 
-import be.bf.banque.models.Titulaire;
+import be.bf.banque.models.AccountOwner;
 import be.bf.banque.ui.BanqueInterface;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -23,13 +23,15 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-demo");
         EntityManager em = emf.createEntityManager();
 
-        List<Titulaire> titulaires = em.createQuery("SELECT t from Titulaire t", Titulaire.class).getResultList();
+        List<AccountOwner> titulaires = em.createQuery("SELECT o from AccountOwner o", AccountOwner.class).getResultList();
         titulaires.forEach(System.out::println);
+
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        em.persist(new Titulaire("Vandemaele","Romain"));
+        em.persist(new AccountOwner("Ovyn","Flavian"));
         transaction.commit();
         em.close();
+
         //Main.class.getName().
 //        Class.forName("org.sqlite.JDBC");
 //        String DB_PATH = Main.class.getClassLoader().getResource("bank.sqlite3").toString();
@@ -44,11 +46,7 @@ public class Main {
 //        ArrayList<Compte> comptes = cr.findAll();
 //        //comptes.forEach(System.out::println);
     }
-//        jpaTest();
-//        Banque banque = new Banque("Piscou SARL");
-//        BanqueInterface bi = new BanqueInterface(banque);
-//        //bi.menu();
-//    }
+
 //
 //
 //
