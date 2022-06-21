@@ -40,6 +40,15 @@ public class CurrentAccount extends Account {
         return this.creditLine;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("CurrentAccount{");
+        sb.append(super.toString());
+        sb.append("creditLine=").append(creditLine);
+        sb.append('}');
+        return sb.toString();
+    }
+
     public void setCreditLine(double creditLine) {
         if (creditLine < 0) return;
         this.creditLine = creditLine;

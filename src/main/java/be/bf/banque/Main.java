@@ -33,6 +33,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println(Config.Db.getUrl());
         BanqueInterface bi = new BanqueInterface();
+        bi.menu();
     }
 
 //

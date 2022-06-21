@@ -43,6 +43,7 @@ public class SavingAccount extends Account {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SavingAccount{");
+        sb.append(super.toString());
         sb.append("lastWithdrawDate=").append(lastWithdrawDate);
         sb.append('}');
         return sb.toString();

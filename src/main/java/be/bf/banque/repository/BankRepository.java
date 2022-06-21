@@ -16,7 +16,8 @@ public class BankRepository extends Repository {
         List<Bank> banks = this.createNamedQuery("Bank.findAll").getResultList();
         AccountRepository accountRepo = new AccountRepository();
         for (Bank bank : banks) {
-            bank.loadAccounts( accountRepo.findByBank(bank.getId()) );
+            System.out.println(bank.getName()+ " id : "+bank.getId());
+            bank.loadAccounts( accountRepo.findByBank( bank ) );
         }
         return banks;
     }

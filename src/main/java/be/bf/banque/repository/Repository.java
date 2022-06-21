@@ -25,8 +25,6 @@ public abstract class Repository {
     protected void connect() {
         this.emFactory = Persistence.createEntityManagerFactory("jpa-demo");
         this.em = this.emFactory.createEntityManager();
-        this.et = em.getTransaction();
-        this.et.begin();
     }
 
     protected void startTransaction() {
@@ -40,7 +38,7 @@ public abstract class Repository {
     }
 
 
-    protected void closeConnect() {
+    public void closeConnect() {
         //this.em.flush();
         this.em.clear();
         this.em.close();

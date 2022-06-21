@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.security.SecureRandom;
 
 /**
  * Class mutable that represents an account in a bank that has an owner fram AccountOwner
@@ -58,26 +59,62 @@ public abstract class Account {
     @JoinColumn(name = "bank_id", referencedColumnName = "id") //only needed in the entity with foreign column
     private Bank bank;
 
+    public Bank getBank() {
+        return bank;
+    }
+
+    public Account setBank(Bank bank) {
+        if(bank==null) return this;
+        this.bank = bank;
+        return this;
+    }
 
     public Account() {}
 
-    public Account(String number, double balance) {}
-    public Account(String number, AccountOwner accountOwner) {}
-    public Account(String number, AccountOwner accountOwner,double balance) {}
+    public Account(String number, double balance) {
+        this.setNumber(number);
+        this.setBalance(balance);
+    }
+    public Account(String number, AccountOwner accountOwner) {
+        this.setNumber(number);
+        this.setAccountOwner(accountOwner);
+
+    }
+    public Account(String number, AccountOwner accountOwner,double balance) {
+        this.setNumber(number);
+        this.setAccountOwner(accountOwner);
+        this.setBalance(balance);
+    }
+
+    public static String IBANGenerator() {
+        final int length = 19;
+        SecureRandom sr = new SecureRandom();
+        StringBuilder sb = new StringBuilder("BE");
+        for (int i=0 ;i < length-5 ;++i) {
+            sb.append(sr.nextInt(1,10));
+            if( (i+3)%4==0 && i!= length-6) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
 
     public String getNumber() {
         return this.number;
     }
 
+    private Account setNumber(String number) {
+        if(number.isBlank()) return this;
+        if(number.length()!=19) return this;
+        this.number = number;
+        return this;
+    }
+
     public double getBalance() {
         return this.balance;
     }
-    private Account setBalance(String number) {
-        if (number==null) return this;
-        if(number.length() != 19) return this;
-        if (!number.matches( "BE[0,9]{2} [0,9]{4} [0,9]{4} [0,9]{4}" )  ) return this;
-
-        this.number = number;
+    private Account setBalance(double balance) {
+        this.balance = balance;
         return this;
     }
 

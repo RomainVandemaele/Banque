@@ -29,6 +29,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NamedQuery(name = "AccountOwner.findById", query = "SELECT a FROM AccountOwner a WHERE a.id = :id")
 @NamedQuery(name = "AccountOwner.findAll", query = "SELECT a FROM AccountOwner a")
+@NamedQuery(name = "AccountOwner.findBySSIN", query = "SELECT a FROM AccountOwner a WHERE a.SSIN = :ssin")
 public class AccountOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,6 +79,11 @@ public class AccountOwner {
         this.id = accountOwner.id;
     }
 
+    public AccountOwner(String lastname, String firstname) {
+        this.SSIN = generateSSIN();
+        setLastname(lastname);
+        setFirstname(firstname);
+    }
     public AccountOwner(String ssin,String lastname, String firstname) {
         this.SSIN = ssin;
         setLastname(lastname);

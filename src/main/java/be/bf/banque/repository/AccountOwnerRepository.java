@@ -44,19 +44,11 @@ public class AccountOwnerRepository  extends Repository {
         return (AccountOwner) query.getSingleResult();
     }
 
-//        //Query jpqlQuery = this.em.createQuery("select a FROM AccountOwner a where a.id=:id ");
-//        TypedQuery<AccountOwner> typedQuery = this.em.createQuery("select a FROM AccountOwner a where a.id=:id",AccountOwner.class);
-//        //jpqlQuery.setParameter("id",id);
-//        typedQuery.setParameter("id",id);
-//        AccountOwner owner = typedQuery.getSingleResult();
-//
-//        Query namedQuery = this.em.createNamedQuery("AccountOwner.findByOwnerId");
-//        namedQuery.setParameter("ownerId",id);
-//        owner = (AccountOwner) namedQuery.getSingleResult();
-
-
-
-
-
+    //findBySSIN
+    public AccountOwner findBySSIN(String ssin) {
+        Query query =  this.createNamedQuery("AccountOwner.findBySSIN");
+        query.setParameter("ssin",ssin);
+        return (AccountOwner) query.getSingleResult();
+    }
 
 }
