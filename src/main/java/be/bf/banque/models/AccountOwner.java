@@ -3,6 +3,7 @@ package be.bf.banque.models;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.security.SecureRandom;
@@ -26,6 +27,8 @@ import java.time.LocalDate;
 @ToString(includeFieldNames = true)
 //@NoArgsConstructor
 @AllArgsConstructor
+@NamedQuery(name = "AccountOwner.findById", query = "SELECT a FROM AccountOwner a WHERE a.id = :id")
+@NamedQuery(name = "AccountOwner.findAll", query = "SELECT a FROM AccountOwner a")
 public class AccountOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +37,15 @@ public class AccountOwner {
 
     @Getter @Setter
     @NotNull
+    @Length(min = SSIN_LENGTH, max = SSIN_LENGTH)
     @Column(name = "ssin", nullable = false,unique = true, length = SSIN_LENGTH)
     private final String SSIN;
 
     //columnDefinition = "varchar(32) default 'John' "
+    @NotNull
     @Column(nullable = false, length = 32)
     private String lastname = "Snow";
+    @NotNull
     @Column(nullable = false, length = 32 )
     private String firstname = "John";
 
@@ -51,13 +57,20 @@ public class AccountOwner {
     static final int SSIN_LENGTH = 12;
 
     public AccountOwner() {
+        this.SSIN = this.generateSSIN();
+    }
+
+    public static String generateSSIN() {
         SecureRandom sr = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-        for (int i=0 ;i < SSIN_LENGTH - 1 ;++i) {
+        for (int i=0 ;i < SSIN_LENGTH - 3 ;++i) {
             sb.append(sr.nextInt(1,10));
         }
-;       sb.insert(6,'-');
-        this.SSIN = sb.toString();
+        int n = Integer.parseInt(sb.toString());
+        int control = 97 - n%97;
+        sb.append(control);
+        ;       sb.insert(6,'-');
+        return sb.toString();
     }
 
     public AccountOwner(AccountOwner accountOwner) {

@@ -1,9 +1,9 @@
 package be.bf.banque.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import com.google.common.base.Objects;
+import jakarta.persistence.*;
 
+import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 
 /** Mutable class that represents a saving accounts which cannot have a negative balance
@@ -11,9 +11,12 @@ import java.time.LocalDate;
  *
  * @see be.bf.banque.models.Account
  */
+@Entity
+@DiscriminatorValue("SAVING")
 public class SavingAccount extends Account {
 
     @Temporal(value = TemporalType.DATE)
+    @PastOrPresent
     @Column(nullable = true)
     private LocalDate lastWithdrawDate;
 
@@ -43,5 +46,19 @@ public class SavingAccount extends Account {
         sb.append("lastWithdrawDate=").append(lastWithdrawDate);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SavingAccount that = (SavingAccount) o;
+        return Objects.equal(lastWithdrawDate, that.lastWithdrawDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), lastWithdrawDate);
     }
 }

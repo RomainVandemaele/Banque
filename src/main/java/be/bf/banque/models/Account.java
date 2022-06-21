@@ -3,9 +3,12 @@ package be.bf.banque.models;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import lombok.ToString;
+import org.checkerframework.common.aliasing.qual.Unique;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Class mutable that represents an account in a bank that has an owner fram AccountOwner
@@ -20,14 +23,20 @@ import javax.validation.constraints.Pattern;
  * @invariant titulaire!=null
  */
 @Entity
-@ToString
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) //default strategy
+@DiscriminatorColumn(name = "accounttype", discriminatorType = DiscriminatorType.STRING)
+@NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id=:id")
+@NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id", nullable = false) //insertable = false? maybe error with detached
     private Long id;
 
-
+    @NotNull
+    @Length(min = 19,max = 19)
+    @Unique
     @Column(name = "number", nullable = false, length = 19,unique = true)
     @Pattern(regexp = "BE[0,9]{2} [0,9]{4} [0,9]{4} [0,9]{4}")
     private String number;
@@ -37,8 +46,15 @@ public abstract class Account {
     private double balance;
 
     @ManyToOne
-    @Column(name = "accountOwner", nullable = false)
+    @NotNull
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private AccountOwner accountOwner;
+
+    @ManyToOne
+    @NotNull
+    //@MapsId
+    @JoinColumn(name = "bank_id", referencedColumnName = "id") //only needed in the entity with foreign column
+    private Bank bank;
 
 
     public Account() {}

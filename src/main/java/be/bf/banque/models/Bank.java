@@ -2,16 +2,13 @@ package be.bf.banque.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.checkerframework.checker.units.qual.Length;
 
 
-import javax.annotation.MatchesPattern;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.*;
 //import javax.validation.constraints.*;
 
 /**
@@ -25,10 +22,12 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name = "bank")
 @Getter @Setter
-@NoArgsConstructor
+@NamedQuery(name = "Bank.findById", query = "SELECT b FROM Bank b WHERE b.id=:id")
+@NamedQuery(name = "Bank.findAll", query = "SELECT b FROM Bank b")
 public class Bank {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //IDENTITY IS AUTOINCREMEHNT
+    @NotNull
     @Column(name = "id", nullable = false )
     private Long id;
 
@@ -36,6 +35,15 @@ public class Bank {
     @NotBlank
     @Pattern(regexp ="[a-z A-Z 0-9.]*")
     private String name;
+
+    @Transient
+    private HashMap<String,Account> accountsMap = new HashMap<String,Account>();
+
+    public Bank() {this.name = "Picsou";}
+
+    public Bank(String name) { this.setName(name);}
+
+
 
     public String getName() {
         return this.name;
@@ -47,4 +55,61 @@ public class Bank {
         this.name = name;
         return this;
     }
+
+    public boolean containsAccount(String number) { return this.accountsMap.containsKey(number);}
+
+    /**
+     * Fonction that allows to get an account by its number if it exists in the bank
+     * @param number String
+     * @return account
+     */
+    public Optional<Account> get(String number) {
+        if (!this.containsAccount(number)) return Optional.empty();
+        return Optional.of(this.accountsMap.get(number));
+    }
+
+    public ArrayList<Account> get(AccountOwner accountOwner) {
+        ArrayList<Account> accounts = new ArrayList<>();
+        for(Account a: this.accountsMap.values()) {
+            if (!a.getAccountOwner().equals(accountOwner)) continue;
+            accounts.add(a);
+        }
+        return accounts;
+    }
+
+    public Bank add(Account account) {
+        if( this.containsAccount(account.getNumber()) ) return this;
+        this.accountsMap.put(account.getNumber(),account);
+        return this;
+    }
+
+    public Bank remove(String number) {
+        if( !this.containsAccount( number ) ) return this;
+        this.accountsMap.remove(number);
+        return this;
+    }
+
+    public Map.Entry<String,Account>[] getAccountsMap() {
+        Map<String,Account> copy = new HashMap<String,Account>();
+        for (Map.Entry<String, Account> entry : this.accountsMap.entrySet()) {
+            copy.put(entry.getKey(),entry.getValue());
+        }
+        return copy.entrySet().toArray(new Map.Entry[0]);
+    }
+
+
+
+    public void applyInterest() {
+        for (Account a : this.accountsMap.values()) {
+            a.applyInterst();
+        }
+    }
+
+    public void applyInterest(AccountOwner accountOwner) {
+        for (Account a : this.get(accountOwner)) {
+                a.applyInterst();
+        }
+    }
+
+
 }
