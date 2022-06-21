@@ -1,29 +1,51 @@
 package be.bf.banque.repository;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 
 public abstract class Repository {
 
     private EntityManagerFactory emFactory;
-    EntityManager em;
+    private EntityManager em;
+    private EntityTransaction et;
+
+    public Repository() {
+        this.connect();
+    }
+
+    public EntityManager getEM() {
+        return this.em;
+    }
+
+    protected Query createNamedQuery(String name) {
+        return this.em.createNamedQuery(name);
+    }
 
     protected void connect() {
         this.emFactory = Persistence.createEntityManagerFactory("jpa-demo");
         this.em = this.emFactory.createEntityManager();
+        this.et = em.getTransaction();
+        this.et.begin();
     }
 
-    protected abstract <T> ArrayList<T> findAll() ;
+    protected void startTransaction() {
+        this.et = em.getTransaction();
+        this.et.begin();
+    }
+
+    protected void commitTransaction(boolean rollback) {
+        if(rollback) {this.et.rollback();}
+        else {this.et.commit();}
+    }
 
 
     protected void closeConnect() {
-        this.em.flush();
+        //this.em.flush();
         this.em.clear();
         this.em.close();
     }
-
-
 }
+
+
+

@@ -21,8 +21,7 @@ import javax.validation.constraints.NotNull;
 @DiscriminatorValue("CURRENT")
 public class CurrentAccount extends Account {
     @Min( value = 0)
-    @NotNull
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double creditLine;
 
     public CurrentAccount() {super();}

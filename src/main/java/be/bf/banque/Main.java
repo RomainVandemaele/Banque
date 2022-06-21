@@ -3,6 +3,7 @@ package be.bf.banque;
 import be.bf.banque.models.Account;
 import be.bf.banque.models.AccountOwner;
 import be.bf.banque.models.Bank;
+import be.bf.banque.models.SavingAccount;
 import be.bf.banque.ui.BanqueInterface;
 import be.bf.banque.utils.Config;
 import jakarta.persistence.*;
@@ -30,10 +31,8 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-
         System.out.println(Config.Db.getUrl());
-        jpaTest();
-
+        BanqueInterface bi = new BanqueInterface();
     }
 
 //
@@ -61,26 +60,38 @@ public class Main {
     public static void jpaTest() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-demo");
         EntityManager em = emf.createEntityManager(); //standard JPA persistent context
-        Session session = em.unwrap(Session.class); //Session is the entituManager for Hibernate
+        //Session session = em.unwrap(Session.class); //Session is the entituManager for Hibernate
 
         //Add all the list  as managed entities in session so update are automatically send to DB
 
-        List<AccountOwner> titulaires = em.createQuery("SELECT o from AccountOwner o", AccountOwner.class).getResultList();
+        //List<AccountOwner> titulaires = em.createQuery("SELECT o from AccountOwner o", AccountOwner.class).getResultList();
 
         //AccountOwner accountOwner =  titulaires.stream().filter( p -> p.getId()==4).findFirst().get();
         //accountOwner.setBirthday(1992,4,1);
 
-        AccountOwner owner = new AccountOwner("900508-45216","Ricardo","Rutabare");
-        //em.persist(owner);
-        owner.setBirthday(1997,2,19);
+
+
         //owner.setId(2L);
 
         //session.merge(owner); //for detached ( existing but not managed)
 
         EntityTransaction entityTransaction = em.getTransaction();
         entityTransaction.begin();
-        em.persist(owner);
+
+        AccountOwner owner = new AccountOwner(AccountOwner.generateSSIN(),"Ovyn","Flavian");
+        owner.setBirthday(1991,7,19);
+        owner.setId(4L);
+        em.merge(owner);
+
+        //SavingAccount sa = new SavingAccount("BE 1234 1234 1234",owner,100);
+        //em.persist(sa);
+
         entityTransaction.commit();
+        emf.close();
+        em.close();
+
+//        em.persist(owner);
+//        entityTransaction.commit();
 
         //session.persist(owner);//if element does not already exists (transient)
 
@@ -94,11 +105,11 @@ public class Main {
 //        transaction.commit();
 //
         //em.flush(); //write all modification of managed enitites to DB
-        em.clear(); // Detach all maneged entities
+        //em.clear() // Detach all maneged entities
 
         //entityManager.find(User.class, userId);
-        emf.close();
-        em.close();
+//        emf.close();
+//        em.close();
     }
 
 

@@ -56,6 +56,13 @@ public class Bank {
         return this;
     }
 
+    public void loadAccounts(List<Account> accounts) {
+        this.accountsMap.clear();
+        for (Account account : accounts) {
+            this.accountsMap.put(account.getNumber(),account);
+        }
+    }
+
     public boolean containsAccount(String number) { return this.accountsMap.containsKey(number);}
 
     /**
@@ -103,6 +110,22 @@ public class Bank {
         for (Account a : this.accountsMap.values()) {
             a.applyInterst();
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Bank{");
+        sb.append(", name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     public void applyInterest(AccountOwner accountOwner) {

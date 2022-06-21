@@ -25,8 +25,10 @@ import javax.validation.constraints.Size;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //default strategy
 @DiscriminatorColumn(name = "accounttype", discriminatorType = DiscriminatorType.STRING)
-@NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id=:id")
 @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
+@NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id=:id")
+@NamedQuery(name = "Account.findByBank", query = "SELECT a FROM Account a WHERE a.bank=:bankId")
+@NamedQuery(name = "Account.findByOwner", query = "SELECT a FROM Account a WHERE a.accountOwner=:ownerId")
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
