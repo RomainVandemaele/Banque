@@ -1,5 +1,6 @@
 package be.bf.banque.repository;
 
+import be.bf.banque.utils.Config;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public abstract class Repository {
     }
 
     protected void connect() {
-        this.emFactory = Persistence.createEntityManagerFactory("jpa-demo");
+        this.emFactory = Persistence.createEntityManagerFactory(Config.Db.getUrlPostGres());
         this.em = this.emFactory.createEntityManager();
     }
 
