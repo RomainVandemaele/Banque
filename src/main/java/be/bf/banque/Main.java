@@ -6,6 +6,7 @@ import be.bf.banque.models.Bank;
 import be.bf.banque.models.SavingAccount;
 import be.bf.banque.ui.BanqueInterface;
 import be.bf.banque.utils.Config;
+import com.google.gson.Gson;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
@@ -15,9 +16,14 @@ import org.hibernate.boot.SessionFactoryBuilder;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.FilterDefinition;
 import org.hibernate.stat.Statistics;
+import org.json.JSONObject;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,31 +37,15 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         //System.out.println(Config.Db.getUrl());
-        BanqueInterface bi = new BanqueInterface();
-        bi.menu();
+        //BanqueInterface bi = new BanqueInterface();
+        //bi.menu();
 
-//        final int n = 6;
-//
-//        System.out.println("Operation (del|with|dep + account number + [amount] )");
-//        Scanner myScanner = new Scanner(System.in);
-//        //myScanner.next("(del|wit|dep) *[0-"+n+"]");
-//        String pattern = "(del|wit|dep) *[0-"+n+"]"+" *([0-9]*){0,1}";
-//        String input = "";
-//        while ( ! input.matches(pattern) ) {
-//            System.out.println("Your choice ?");
-//            input = myScanner.nextLine();
-//        }
+
 
 
     }
 
-//
-//
-//
-//
-//
-//
-//
+
 //    public static Titulaire creerUtilisateur() {
 //        System.out.println("Bienvenue dans la banque Picsou SARL");
 //        System.out.println("Quel est votre nom ?");
@@ -83,10 +73,7 @@ public class Main {
         //AccountOwner accountOwner =  titulaires.stream().filter( p -> p.getId()==4).findFirst().get();
         //accountOwner.setBirthday(1992,4,1);
 
-
-
         //owner.setId(2L);
-
         //session.merge(owner); //for detached ( existing but not managed)
 
         EntityTransaction entityTransaction = em.getTransaction();

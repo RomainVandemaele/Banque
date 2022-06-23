@@ -1,7 +1,10 @@
 INSERT INTO bank
 VALUES (1,'Picsou'),(2,'ING'),(3,'Belfius');
 
-
+INSERT INTO accountowner(ssin, firstname, lastname)
+VALUES ('901002-31164','Flavian','Ovyn'),
+       ('901002-31165','Phan','Tan'),
+       ('901002-31166','Vandemaele','Romain');
 
 INSERT INTO account (accounttype, balance, number, creditline, lastwithdrawdate, owner_id, bank_id)
 VALUES ('CURRENT',250.0,'BE40 4362 6514 9964',50.0,null,1,1 )
