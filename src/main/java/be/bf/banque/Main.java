@@ -29,7 +29,6 @@ public class Main {
 
     static Scanner myScanner = new Scanner(System.in);
 
-
     public static void main(String[] args) throws Exception {
         System.out.println(Config.Db.getUrl());
         BanqueInterface bi = new BanqueInterface();
