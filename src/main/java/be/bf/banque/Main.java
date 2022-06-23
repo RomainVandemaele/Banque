@@ -30,9 +30,13 @@ public class Main {
     static Scanner myScanner = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
-        System.out.println(Config.Db.getUrl());
-        BanqueInterface bi = new BanqueInterface();
-        bi.menu();
+        //System.out.println(Config.Db.getUrl());
+        //BanqueInterface bi = new BanqueInterface();
+        //bi.menu();
+
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(Config.Db.getUrlPostGres());
+        EntityManager em = emf.createEntityManager();
     }
 
 //
