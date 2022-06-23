@@ -31,12 +31,22 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         //System.out.println(Config.Db.getUrl());
-        //BanqueInterface bi = new BanqueInterface();
-        //bi.menu();
+        BanqueInterface bi = new BanqueInterface();
+        bi.menu();
+
+//        final int n = 6;
+//
+//        System.out.println("Operation (del|with|dep + account number + [amount] )");
+//        Scanner myScanner = new Scanner(System.in);
+//        //myScanner.next("(del|wit|dep) *[0-"+n+"]");
+//        String pattern = "(del|wit|dep) *[0-"+n+"]"+" *([0-9]*){0,1}";
+//        String input = "";
+//        while ( ! input.matches(pattern) ) {
+//            System.out.println("Your choice ?");
+//            input = myScanner.nextLine();
+//        }
 
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(Config.Db.getUrlPostGres());
-        EntityManager em = emf.createEntityManager();
     }
 
 //

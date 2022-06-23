@@ -5,6 +5,7 @@ import be.bf.banque.repository.AccountOwnerRepository;
 import be.bf.banque.repository.AccountRepository;
 import be.bf.banque.repository.BankRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -85,7 +86,7 @@ public class BanqueInterface {
         System.out.println(menu.toString());
 
         while (! myScanner.hasNext("[1-2]") ) {
-            System.out.println("Your chopice ?");
+            System.out.println("Your choice ?");
             myScanner.next();
         }
         String input = myScanner.next();
@@ -99,27 +100,8 @@ public class BanqueInterface {
         }
     }
 
-    public void listAccount() {
-        List<Account> ownerAccounts= this.accountRepo.findByOwner(currentOwner);
-        final int n = ownerAccounts.size();
-        if(n==0) {
-            System.out.println("you have no account in this bank");
-            loginMenu();
-        }
-        for(int i=0;i<n;++i) {
-            System.out.println(i+1 + " : " + ownerAccounts.get(i));
-        }
-        System.out.println("Operation (del|with|dep + account number + [amount] )");
-
-        while (! myScanner.hasNext("['del''wit''dep'] [0-"+n+"]"+"") ) {
-            System.out.println("Your choice ?");
-            myScanner.next();
-        }
-        String input = myScanner.next();
-    }
-
     public void newAccount() {
-        Account account = null;
+        Account account;
         System.out.println("We need some information : ");
         System.out.println("saving(S) or current(C) ? ");
         String type = myScanner.next();
@@ -135,16 +117,54 @@ public class BanqueInterface {
         loginMenu();
     }
 
+
+
+    public void listAccount() {
+        List<Account> ownerAccounts= this.accountRepo.findByOwner(currentOwner);
+        final int n = ownerAccounts.size();
+        if(n==0) {
+            System.out.println("you have no account in this bank");
+            loginMenu();
+        }
+        for(int i=0;i<n;++i) {
+            System.out.println(i+1 + " : " + ownerAccounts.get(i));
+        }
+        System.out.println("Operation (del|with|dep + account number + [amount] )");
+
+        String pattern = "(del|wit|dep) [1-"+(n+1)+"]"+"( [0-9]*){0,1}";
+        String[] tokens = createMenu(new ArrayList<String>(),pattern);
+        Account account = ownerAccounts.get(Integer.valueOf(tokens[1])-1);
+
+        if (tokens[0].equals("del")) {
+            deleteAccount(account);
+        } else if (tokens.length == 3) {
+            final int amount = Integer.valueOf( tokens[2] );
+            if(tokens[0].equals("wit")) { account.withdraw(amount);}
+            else { account.deposit(amount); }
+        }else {
+            System.out.println("For withdraw and deposit you new to specify an amount");
+        }
+        listAccount();
+    }
+
     public void deleteAccount(Account account) {
         this.accountRepo.remove(account);
     }
+    public void accountOp(String[] tokens) {}
 
-    public void accountOp(String op, int amount) {
-
-    }
-
-    public int createMenu(List<String> options) {
-        return 0;
+    public String[] createMenu(List<String> options, String pattern) {
+        final int n = options.size();
+        StringBuilder menu = new StringBuilder("What do you want to do?\n");
+        for (int i= 0;i<n;++i) {
+            menu.append(i).append(" : ").append(options.get(i)).append("\n");
+        }
+        String input = "";
+        while ( ! input.matches(pattern) ) {
+            System.out.println("Your choice " + pattern + " ?");
+            input = myScanner.nextLine();
+        }
+        System.out.println(input);
+        return input.split(" ");
     }
 
     public void quit() {
@@ -152,4 +172,5 @@ public class BanqueInterface {
         this.ownerRepo.closeConnect();
         this.bankRepo.closeConnect();
     }
+
 }

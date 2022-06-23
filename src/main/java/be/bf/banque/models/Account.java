@@ -177,7 +177,7 @@ public abstract class Account {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Account{");
         sb.append("number='").append(number).append('\'');
-        sb.append(", amount=").append(balance);
+        sb.append(", balancr=").append(balance);
         sb.append(", accountOwner=").append(accountOwner);
         sb.append('}');
         return sb.toString();
