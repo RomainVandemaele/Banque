@@ -2,13 +2,12 @@ package be.bf.banque.models;
 
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
-import lombok.ToString;
+import lombok.Builder;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.security.SecureRandom;
 
 /**
@@ -30,6 +29,7 @@ import java.security.SecureRandom;
 @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id=:id")
 @NamedQuery(name = "Account.findByBank", query = "SELECT a FROM Account a WHERE a.bank=:bankId")
 @NamedQuery(name = "Account.findByOwner", query = "SELECT a FROM Account a WHERE a.accountOwner=:ownerId")
+@Builder
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +59,19 @@ public abstract class Account {
     @JoinColumn(name = "bank_id", referencedColumnName = "id") //only needed in the entity with foreign column
     private Bank bank;
 
+    @Transient
+    private IGoingNegativeBalance goingNegativeBalance;
+
+    public void setGoingInNegative(IGoingNegativeBalance negative) {
+        this.goingNegativeBalance = negative;
+    }
+
+    protected void triggerNegativeAccountEvent(Account account) {
+        if(goingNegativeBalance != null) {
+            goingNegativeBalance.triggerEvent(account);
+        }
+    }
+
     public Bank getBank() {
         return bank;
     }
@@ -75,11 +88,13 @@ public abstract class Account {
         this.setNumber(number);
         this.setBalance(balance);
     }
+
     public Account(String number, AccountOwner accountOwner) {
         this.setNumber(number);
         this.setAccountOwner(accountOwner);
 
     }
+
     public Account(String number, AccountOwner accountOwner,double balance) {
         this.setNumber(number);
         this.setAccountOwner(accountOwner);
@@ -97,6 +112,10 @@ public abstract class Account {
             }
         }
         return sb.toString();
+    }
+
+    public<T> void type(T value) {
+
     }
 
     public String getNumber() {

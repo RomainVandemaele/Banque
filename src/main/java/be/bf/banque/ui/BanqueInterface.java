@@ -8,6 +8,7 @@ import be.bf.banque.repository.BankRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class BanqueInterface {
 
@@ -126,31 +127,62 @@ public class BanqueInterface {
             System.out.println("you have no account in this bank");
             loginMenu();
         }
-        for(int i=0;i<n;++i) {
-            System.out.println(i+1 + " : " + ownerAccounts.get(i));
-        }
+
+        IntStream.range(0, n).forEach(i -> System.out.printf("%d : %s\n",i+1,ownerAccounts.get(i).getNumber()) );
+
         System.out.println("Operation (del|with|dep + account number + [amount] )");
-
-        String pattern = "(del|wit|dep) [1-"+(n+1)+"]"+"( [0-9]*){0,1}";
-        String[] tokens = createMenu(new ArrayList<String>(),pattern);
-        Account account = ownerAccounts.get(Integer.valueOf(tokens[1])-1);
-
-        if (tokens[0].equals("del")) {
-            deleteAccount(account);
-        } else if (tokens.length == 3) {
-            final int amount = Integer.valueOf( tokens[2] );
-            if(tokens[0].equals("wit")) { account.withdraw(amount);}
-            else { account.deposit(amount); }
-        }else {
-            System.out.println("For withdraw and deposit you new to specify an amount");
+        String input = new String();
+        while (! input.matches("del [0-9]+"+"|wit [0-9]+ [0-9]+"+"|dep [0-9]+ [0-9]+|q") ) {
+            System.out.println("Your choice ?");
+            input = myScanner.nextLine();
         }
-        listAccount();
+        accountOperation(ownerAccounts,input);
+
+//        String pattern = "(del|wit|dep) [1-"+(n+1)+"]"+"( [0-9]*){0,1}";
+//        String[] tokens = createMenu(new ArrayList<String>(),pattern);
+//        Account account = ownerAccounts.get(Integer.valueOf(tokens[1])-1);
+//
+//        if (tokens[0].equals("del")) {
+//            deleteAccount(account);
+//        } else if (tokens.length == 3) {
+//            final int amount = Integer.valueOf( tokens[2] );
+//            if(tokens[0].equals("wit")) { account.withdraw(amount);}
+//            else { account.deposit(amount); }
+//        }else {
+//            System.out.println("For withdraw and deposit you new to specify an amount");
+//        }
+//        listAccount();
     }
 
     public void deleteAccount(Account account) {
         this.accountRepo.remove(account);
     }
-    public void accountOp(String[] tokens) {}
+    public void accountOperation(List<Account> ownerAccounts,String op) {
+        if(op.length()==1) {this.quit();}
+        else {
+            String[] tokens = op.split(" ");
+            int accountIndex = Integer.valueOf(tokens[1]) - 1;
+            if (accountIndex >= ownerAccounts.size() || accountIndex < 0) {
+                System.out.println("That account does not exists try again.");
+                listAccount();
+            }
+            switch (tokens[0]) {
+                case "del":
+                    this.deleteAccount(ownerAccounts.get(accountIndex));
+                    break;
+                case "dep":
+                    final int depositAmount = Integer.valueOf(tokens[2]);
+                    ownerAccounts.get(accountIndex).deposit(depositAmount);
+                    break;
+                default:
+                    final int withdrawAmount = Integer.valueOf(tokens[2]);
+                    ownerAccounts.get(accountIndex).withdraw(withdrawAmount);
+                    break;
+            }
+            accountRepo.update(ownerAccounts.get(accountIndex));
+            listAccount();
+        }
+    }
 
     public String[] createMenu(List<String> options, String pattern) {
         final int n = options.size();

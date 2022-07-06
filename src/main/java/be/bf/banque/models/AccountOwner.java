@@ -24,7 +24,7 @@ import java.time.LocalDate;
  * @invariant lastname not null and lastname.length > 0
  */
 @Entity
-@ToString(includeFieldNames = true)
+
 //@NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "AccountOwner.findById", query = "SELECT a FROM AccountOwner a WHERE a.id = :id")
@@ -33,10 +33,8 @@ import java.time.LocalDate;
 public class AccountOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Long id;
 
-    @Getter @Setter
     @NotNull
     @Length(min = SSIN_LENGTH, max = SSIN_LENGTH)
     @Column(name = "ssin", nullable = false,unique = true, length = SSIN_LENGTH)

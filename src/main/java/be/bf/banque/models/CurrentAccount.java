@@ -60,6 +60,18 @@ public class CurrentAccount extends Account {
     }
 
     @Override
+    public void withdraw(double amount) {
+        if( getBalance() - amount < -this.creditLine) return;
+        double previousBalance = getBalance();
+        super.withdraw(amount);
+        if(previousBalance > 0 && getBalance() < 0) {
+            this.triggerNegativeAccountEvent(this);
+        }
+    }
+
+
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

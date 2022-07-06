@@ -35,6 +35,16 @@ public class AccountRepository extends Repository {
         }
     }
 
+    public void update(Account account) {
+        this.startTransaction();
+        try {
+            this.getEM().merge(account);
+            this.commitTransaction(false);
+        }catch (Exception e) {
+            this.commitTransaction(true);
+        }
+    }
+
     public List<Account> findAll() {
         return this.createNamedQuery("Account.findAll").getResultList();
     }

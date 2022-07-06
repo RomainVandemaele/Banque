@@ -1,5 +1,6 @@
 package be.bf.banque.models;
 
+import be.bf.banque.IAction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.*;
 //import javax.validation.constraints.*;
 
@@ -86,6 +88,7 @@ public class Bank {
 
     public Bank add(Account account) {
         if( this.containsAccount(account.getNumber()) ) return this;
+        account.setGoingInNegative(this::triggerNegativeAccountEvent);
         this.accountsMap.put(account.getNumber(),account);
         return this;
     }
@@ -132,6 +135,11 @@ public class Bank {
         for (Account a : this.get(accountOwner)) {
                 a.applyInterst();
         }
+    }
+
+
+    public void triggerNegativeAccountEvent(Account account) {
+        System.out.printf("%s has passed in negative at %s\n",account, LocalDate.now());
     }
 
 
