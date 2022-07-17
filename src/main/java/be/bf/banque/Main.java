@@ -1,9 +1,6 @@
 package be.bf.banque;
 
-import be.bf.banque.models.Account;
-import be.bf.banque.models.AccountOwner;
-import be.bf.banque.models.Bank;
-import be.bf.banque.models.SavingAccount;
+import be.bf.banque.models.*;
 import be.bf.banque.ui.BanqueInterface;
 import be.bf.banque.utils.Config;
 import com.google.gson.Gson;
@@ -29,9 +26,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
+//import static method //can use the method as if it was part of the class
 
 public class Main {
+    //signature main(String[] args)
+    //prototype public static void main(String[] args)
 
     static Scanner myScanner = new Scanner(System.in);
 
@@ -40,39 +39,25 @@ public class Main {
         //BanqueInterface bi = new BanqueInterface();
         //bi.menu();
 
+        Bank b = new Bank("Picsou");
+        b.add(new CurrentAccount("BE12 1234 1234 1234",new AccountOwner(),10,25));
+        b.get("BE12 1234 1234 1234").ifPresent(a -> a.withdraw(27));
+        //new Account.AccountBuilder().balance(100.5).
+
     }
 
 
-//    public static Titulaire creerUtilisateur() {
-//        System.out.println("Bienvenue dans la banque Picsou SARL");
-//        System.out.println("Quel est votre nom ?");
-//        String nom = myScanner.nextLine();
-//        System.out.println("Quel est votre Prenom ?");
-//        String prenom = myScanner.nextLine();
-//        System.out.println("Quel est votre date de naissance dd/mm/yyyy ?");
-//        String dateS = myScanner.nextLine();
-//        LocalDate birthday = LocalDate.parse(dateS, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//        System.out.println("Merci pour vos infos, nous vous avons créer un profil chez nous.");
-//        return new Titulaire(nom,prenom,birthday);
-//    }
-//
-//
-//
+
     public static void jpaTest() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-demo");
         EntityManager em = emf.createEntityManager(); //standard JPA persistent context
         //Session session = em.unwrap(Session.class); //Session is the entituManager for Hibernate
-
         //Add all the list  as managed entities in session so update are automatically send to DB
-
         //List<AccountOwner> titulaires = em.createQuery("SELECT o from AccountOwner o", AccountOwner.class).getResultList();
-
         //AccountOwner accountOwner =  titulaires.stream().filter( p -> p.getId()==4).findFirst().get();
         //accountOwner.setBirthday(1992,4,1);
-
         //owner.setId(2L);
         //session.merge(owner); //for detached ( existing but not managed)
-
         EntityTransaction entityTransaction = em.getTransaction();
         entityTransaction.begin();
 
